@@ -1,35 +1,3 @@
-// import { HttpException, Injectable } from '@nestjs/common';
-
-// @Injectable()
-// export class TextGeneratorService {
-//     async questionAnswer(parameter: string, context: string): Promise<string> {
-//         try {
-//             const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-//                 method: "POST",
-//                 headers: {
-//                     "Authorization": "Bearer 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",
-//                     "Content-Type": "application/json"
-//                 },
-//                 body: JSON.stringify({
-//                     "model": "deepseek/deepseek-r1:free",
-//                     "messages": [
-//                         {
-//                             "role": "user",
-//                             "content": `Give straight answer ${context} ${parameter}`
-//                         }
-//                     ]
-//                 })
-//             });
-//             const responseText = await response.json();
-//             return responseText;
-//         } catch (error) {
-//             console.error('HF Inference Error:', error);
-//             throw new HttpException('Inference API error', 500);
-//         }
-//     }
-// }
-
-
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import fetch from 'node-fetch';
 
@@ -56,7 +24,7 @@ export class TextGeneratorService {
   ): Promise<string> {
     try {
       const payload = {
-        model: 'deepseek/deepseek-r1:free',
+        model: 'mistralai/mistral-7b-instruct:free',
         temperature: 0,
         messages: [
           {
