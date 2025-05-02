@@ -1,10 +1,11 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './utils/auth.guard';
 import { Request, Response } from 'express'; // Explicitly import Response from express
 
 @Controller('auth')
 export class AuthController {
+  constructor(private readonly authService: AuthService) {}
 
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
@@ -16,5 +17,32 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   handleRedirect(@Req() req: Request, @Res() res: Response) {
     return res.redirect('http://localhost:3000/'); // Now TypeScript recognizes redirect
+  }
+
+  @Post('register')
+  async register(
+    @Body('email') email: string,
+    @Body('password') password: string,
+    @Body('displayName') displayName: string,
+  ) {
+    const user = await this.authService.registerUser(email, password, displayName);
+    return { message: 'User registered successfully', user };
+  }
+
+  @Post('login')
+  async login(
+    @Body('email') email: string,
+    @Body('password') password: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const user = await this.authService.validateUserByEmail(email, password);
+    req.login(user, (err) => {
+      if (err) {
+        throw new Error('Login failed');
+      }
+      res.cookie('connect.sid', req.sessionID, { httpOnly: true });
+      res.send({ message: 'Login successful', user });
+    });
   }
 }

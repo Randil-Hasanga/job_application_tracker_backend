@@ -9,6 +9,6 @@ import { SessionSerializer } from './utils/Serializer';
 @Module({
   imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
   controllers: [AuthController],
-  providers: [GoogleStrategy, {provide: 'AUTH_SERVICE', useClass: AuthService}, SessionSerializer],
+  providers: [AuthService,GoogleStrategy, {provide: 'AUTH_SERVICE', useClass: AuthService}, SessionSerializer],
 })
 export class AuthModule {}
