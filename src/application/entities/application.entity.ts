@@ -6,6 +6,9 @@ export type ApplicationDocument = Application & Document
 @Schema({collection: 'applications', timestamps: true})
 export class Application {
 
+    @Prop({type: Types.ObjectId, ref: 'User'})
+    user_id: Types.ObjectId;
+
     @Prop()
     company : string;
 

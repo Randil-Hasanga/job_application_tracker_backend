@@ -22,9 +22,9 @@ export class ApplicationService {
     }
   }
 
-  findAll() {
+  async findAll(userId) {
     try {
-      const response = this.applicationModel.find().exec();
+      const response = await this.applicationModel.find({ user_id: userId }).exec();
       return response;
     } catch (error) {
       console.error('Error fetching applications:', error);
@@ -32,11 +32,43 @@ export class ApplicationService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} application`;
+  async findOne(id: string) {
+    try {
+      const response = await this.applicationModel.findById(id).exec();
+      if (!response) {
+        throw new Error('Application not found');
+      }
+      return response;
+    } catch (error) {
+      console.error('Error fetching application by ID:', error);
+      throw new Error('Failed to fetch application. Please try again later.');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} application`;
+  remove(id: string) {
+    try {
+      const response = this.applicationModel.findByIdAndDelete(id).exec();
+      if (!response) {
+        throw new Error('Application not found');
+      }
+      return response;
+    } catch (error) {
+      console.error('Error deleting application:', error);
+      throw new Error('Failed to delete application. Please try again later.');
+    }
+  }
+
+  async update(id: string, updateApplicationDto: CreateApplicationDto) {
+    try {
+      const response = await this.applicationModel.findByIdAndUpdate(id, updateApplicationDto, { new: true }).exec();
+      if (!response) {
+        throw new Error('Application not found');
+      }
+      return response;
+    } catch (error) {
+      console.error('Error updating application:', error);
+      throw new Error('Failed to update application. Please try again later.');
+
+    }
   }
 }

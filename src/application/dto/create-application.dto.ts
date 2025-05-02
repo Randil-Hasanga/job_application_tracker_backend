@@ -3,6 +3,9 @@ import { IsDate, IsString } from "class-validator";
 export class CreateApplicationDto {
 
     @IsString()
+    user_id: string;
+
+    @IsString()
     company: string;
 
     @IsString()
