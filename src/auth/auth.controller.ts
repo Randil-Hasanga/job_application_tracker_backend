@@ -16,7 +16,7 @@ export class AuthController {
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   handleRedirect(@Req() req: Request, @Res() res: Response) {
-    return res.redirect(`${process.env.FRONTEND_URL}`); // Now TypeScript recognizes redirect
+    return res.redirect(`${process.env.FRONTEND_URL}/dashboard`); // Now TypeScript recognizes redirect
   }
 
   @Post('register')
@@ -45,4 +45,14 @@ export class AuthController {
       res.send({ message: 'Login successful', user });
     });
   }
+
+  @Get('user')
+  async getUser(@Req() req: Request) {
+    if (req.isAuthenticated()) {
+      return req.user;
+    } else {
+      return { message: 'User not authenticated' };
+    }
+  }
+
 }

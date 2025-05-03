@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Application, ApplicationDocument } from './entities/application.entity';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 @Injectable()
 export class ApplicationService {
@@ -60,6 +60,11 @@ export class ApplicationService {
 
   async update(id: string, updateApplicationDto: CreateApplicationDto) {
     try {
+
+      if (updateApplicationDto.user_id && typeof updateApplicationDto.user_id === 'string') {
+        updateApplicationDto.user_id = new Types.ObjectId(updateApplicationDto.user_id);
+      }
+      
       const response = await this.applicationModel.findByIdAndUpdate(id, updateApplicationDto, { new: true }).exec();
       if (!response) {
         throw new Error('Application not found');

@@ -10,7 +10,7 @@ export class SessionSerializer extends PassportSerializer {
   }
 
   serializeUser(user: UserDocument, done: Function) {
-    done(null, { _id: user._id, email: user.email });
+    done(null, { _id: user._id, email: user.email, picture: user.picture, displayName: user.displayName });
   }
 
   async deserializeUser(payload: any, done: Function) {

@@ -1,9 +1,10 @@
+import { Type } from "@nestjs/common";
 import { IsDate, IsString } from "class-validator";
+import { ObjectId, Types } from "mongoose";
 
 export class CreateApplicationDto {
 
-    @IsString()
-    user_id: string;
+    user_id: string | Types.ObjectId;
 
     @IsString()
     company: string;
@@ -22,6 +23,6 @@ export class CreateApplicationDto {
 
     @IsString()
     vacancy_link: string;
-
+  updateApplicationDto: import("mongoose").Types.ObjectId;
 }
 
