@@ -6,9 +6,16 @@ import { ApplicationModule } from './application/application.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
+import { config } from 'dotenv';
+
+config();
+
+if (!process.env.MONGODB_URI) {
+  throw new Error('MONGODB_URI environment variable is not set');
+}
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb+srv://randilhasanga33:33hasangarandil@cluster0.i7wzzby.mongodb.net/JOT?retryWrites=true&w=majority&appName=Cluster0'), TextGeneratorModule, ApplicationModule, AuthModule, PassportModule.register({ session: true })],
+  imports: [MongooseModule.forRoot(process.env.MONGODB_URI), TextGeneratorModule, ApplicationModule, AuthModule, PassportModule.register({ session: true })],
   controllers: [AppController],
   providers: [AppService],
 })
