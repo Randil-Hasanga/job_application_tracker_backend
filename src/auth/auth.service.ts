@@ -13,21 +13,40 @@ export class AuthService {
         private readonly userModel: Model<UserDocument>,
     ) { }
 
+    // async validateUser(userDetails: UserDetails) {
+    //     try {
+    //         const user = await this.userModel.findOne({ email: userDetails.email });
+    //         console.log("User found", user);
+    //         if (user) return user;
+    //         console.log("User not found, creating new user");
+    //         const newUser = await this.userModel.create(userDetails);
+    //         console.log('Auth service', newUser);
+    //         return newUser;
+
+    //     } catch (error) {
+    //         console.error("Error validating user", error);
+    //         throw new Error('Error validating user');
+    //     }
+    // }
+
     async validateUser(userDetails: UserDetails) {
         try {
             const user = await this.userModel.findOne({ email: userDetails.email });
             console.log("User found", user);
             if (user) return user;
+    
             console.log("User not found, creating new user");
-            const newUser = await this.userModel.create(userDetails);
+            const newUser = new this.userModel(userDetails);
+            await newUser.save();
             console.log('Auth service', newUser);
             return newUser;
-
+    
         } catch (error) {
             console.error("Error validating user", error);
             throw new Error('Error validating user');
         }
     }
+    
 
     async findUser(id: string) {
         try {

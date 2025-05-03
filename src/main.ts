@@ -28,10 +28,10 @@ async function bootstrap() {
     },
   }));
 
-  // app.enableCors({
-  //   origin: 'https://www.frontend.com',
-  //   credentials: true, // <--- important to allow cookies
-  // });
+  app.enableCors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  });
   
 
   app.use(passport.initialize());
