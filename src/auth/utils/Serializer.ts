@@ -18,8 +18,9 @@ export class SessionSerializer extends PassportSerializer {
     const user = await this.authService.findUser(payload._id);
     if (!user) {
       console.error('User not found during deserialization');
-      return done(null, null);
+      return done(null, null); // No user found, log out
     }
+    console.log('User found during deserialization', user); // Debug log
     return done(null, user);
-  }
+  }  
 }
