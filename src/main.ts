@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import { config } from 'dotenv';
+import MongoStore from 'connect-mongo';
 
 config();
 
@@ -31,6 +32,7 @@ async function bootstrap() {
       maxAge: 1000 * 60 *60 *24,
       sameSite: 'none',
     },
+    store: MongoStore.create({mongoUrl: process.env.MONGODB_URI}),
   }));
 
   app.enableCors({
@@ -38,7 +40,6 @@ async function bootstrap() {
     credentials: true,
   });
   
-
   app.use(passport.initialize());
   app.use(passport.session());
 
