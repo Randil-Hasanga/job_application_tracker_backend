@@ -25,7 +25,7 @@ async function bootstrap() {
   app.use(session({
     secret: sessionSecret,
     saveUninitialized: false,
-    resave: true,
+    resave: false,
     cookie: {
       secure: true, // Set to true if using https
       maxAge: 1000 * 60 *60 *24,
