@@ -54,12 +54,14 @@ import * as passport from 'passport';
 import { config } from 'dotenv';
 import * as mongoose from 'mongoose';
 import * as MongoDBStore from 'connect-mongodb-session';
+import { INestApplication } from '@nestjs/common';
 
 config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  (app as INestApplication & { set: Function }).set('trust proxy', 1);
+  
   const sessionSecret = process.env.SESSION_SECRET;
   const frontendURL = process.env.FRONTEND_URL;
 
