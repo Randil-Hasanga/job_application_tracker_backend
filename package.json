@@ -28,7 +28,6 @@
     "@nestjs/platform-express": "^11.0.1",
     "@types/bcrypt": "^5.0.2",
     "@types/connect-mongo": "^3.1.2",
-    "@types/connect-mongodb-session": "^2.4.8",
     "bcrypt": "^5.1.1",
     "class-validator": "^0.14.1",
     "connect-mongo": "^5.1.0",
