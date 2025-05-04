@@ -54,7 +54,6 @@ import * as passport from 'passport';
 import { config } from 'dotenv';
 import * as mongoose from 'mongoose';
 import * as MongoDBStore from 'connect-mongodb-session';
-import * as cookieParser from 'cookie-parser';
 
 config();
 
@@ -81,12 +80,10 @@ async function bootstrap() {
   }
   await mongoose.connect(MONGODB_URI);
 
-  const MongoDBStoreInstance = MongoDBStore(session);
-
   // MongoDB session store
-  const store = new MongoDBStoreInstance({
+  const store = new MongoDBStore(session)({
     uri: MONGODB_URI,
-    collection: 'sessions',
+    collection: 'sessions', // You can change the collection name if you want
   });
 
   store.on('error', (error) => {
@@ -113,12 +110,7 @@ async function bootstrap() {
     origin: frontendURL,
     credentials: true,
   });
-  
-  const expressApp = app.getHttpAdapter().getInstance();
-  expressApp.set('trust proxy', 1);
-  
 
-  app.use(cookieParser());
   app.use(passport.initialize());
   app.use(passport.session());
 
