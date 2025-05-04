@@ -24,7 +24,7 @@ export class ApplicationService {
 
   async findAll(userId) {
     try {
-      const response = await this.applicationModel.find({ user_id: userId }).exec();
+      const response = await this.applicationModel.find({ user_id: userId }).sort({ dateApplied: -1 }).exec();
       return response;
     } catch (error) {
       console.error('Error fetching applications:', error);
