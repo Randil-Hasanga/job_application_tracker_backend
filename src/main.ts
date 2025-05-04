@@ -30,7 +30,7 @@ async function bootstrap() {
   }));
 
   app.enableCors({
-    origin: process.env.FRONTEND_URL,
+    origin: 'https://job-application-tracker-react-6c3b73992b04.herokuapp.com',
     credentials: true,
   });
   
