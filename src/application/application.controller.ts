@@ -15,6 +15,7 @@ export class ApplicationController {
       const user = req.user as any; // Cast to any to access user properties
       const userId = user._id; // Access the user ID from the request object
 
+      
       const application = await this.applicationService.create({
         ...createApplicationDto,
         user_id: userId,
