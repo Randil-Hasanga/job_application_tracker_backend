@@ -10,6 +10,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const sessionSecret = process.env.SESSION_SECRET;
+  const frontendURL = process.env.FRONTEND_URL;
+
+  if (!frontendURL) {
+    throw new Error('FRONTEND_URL environment variable is not defined');
+  }
+
   if (!sessionSecret) {
     throw new Error('SESSION_SECRET environment variable is not defined');
   }
@@ -21,16 +27,14 @@ async function bootstrap() {
     saveUninitialized: false,
     resave: true,
     cookie: {
-      secure: isProduction, // Set to true if using https
-      sameSite: isProduction ? 'none' : 'lax',
-      maxAge: 1000 * 60 *60 *24
-      // sameSite: 'none',
-      // secure: true,
+      secure: true, // Set to true if using https
+      maxAge: 1000 * 60 *60 *24,
+      sameSite: 'none',
     },
   }));
 
   app.enableCors({
-    origin: 'https://job-application-tracker-react-6c3b73992b04.herokuapp.com',
+    origin: frontendURL,
     credentials: true,
   });
   
