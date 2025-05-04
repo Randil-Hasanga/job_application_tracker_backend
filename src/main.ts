@@ -21,7 +21,8 @@ async function bootstrap() {
     saveUninitialized: false,
     resave: true,
     cookie: {
-      secure: false, // Set to true if using https
+      secure: isProduction, // Set to true if using https
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 1000 * 60 *60 *24
       // sameSite: 'none',
       // secure: true,
