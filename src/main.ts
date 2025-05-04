@@ -64,9 +64,12 @@ async function bootstrap() {
   const frontendURL = process.env.FRONTEND_URL;
 
   if (!frontendURL) {
+    
     throw new Error('FRONTEND_URL environment variable is not defined');
+  }else{
+    console.log(`frontend url ${frontendURL}`)
   }
-
+  
   if (!sessionSecret) {
     throw new Error('SESSION_SECRET environment variable is not defined');
   }
