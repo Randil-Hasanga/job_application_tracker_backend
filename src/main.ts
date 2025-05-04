@@ -100,6 +100,7 @@ async function bootstrap() {
       cookie: {
         secure: isProduction, // Set to true in production if using https
         maxAge: 1000 * 60 * 60 * 24, // Session max age: 1 day
+        sameSite : isProduction ? 'none' : 'lax'
       },
     })
   );
