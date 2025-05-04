@@ -29,17 +29,19 @@ async function bootstrap() {
     resave: false,
     cookie: {
       secure: true, // Set to true if using https
-      maxAge: 1000 * 60 *60 *24,
+      maxAge: 1000 * 60 * 60 * 24,
       sameSite: 'none',
     },
-    store: MongoStore.create({mongoUrl: process.env.MONGODB_URI}),
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+    }),
   }));
 
   app.enableCors({
     origin: frontendURL,
     credentials: true,
   });
-  
+
   app.use(passport.initialize());
   app.use(passport.session());
 
