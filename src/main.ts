@@ -3,7 +3,6 @@
 // import * as session from 'express-session';
 // import * as passport from 'passport';
 // import { config } from 'dotenv';
-// import MongoStore from 'connect-mongo';
 
 // config();
 
@@ -12,7 +11,6 @@
 
 //   const sessionSecret = process.env.SESSION_SECRET;
 //   const frontendURL = process.env.FRONTEND_URL;
-  
 
 //   if (!frontendURL) {
 //     throw new Error('FRONTEND_URL environment variable is not defined');
@@ -29,19 +27,17 @@
 //     saveUninitialized: false,
 //     resave: false,
 //     cookie: {
-//       secure: true, // Set to true if using https
-//       maxAge: 1000 * 60 * 60 * 24,
-//       sameSite: 'none',
+//       secure: false, // Set to true if using https
+//       maxAge: 1000 * 60 *60 *24,
+//       // sameSite: 'none',
 //     },
-//     store: MongoStore.create({
-//       mongoUrl: process.env.MONGODB_URI,
-//     }),
 //   }));
 
 //   app.enableCors({
 //     origin: frontendURL,
 //     credentials: true,
 //   });
+  
 
 //   app.use(passport.initialize());
 //   app.use(passport.session());
@@ -56,65 +52,66 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import { config } from 'dotenv';
-import connectMongo from 'connect-mongo';
+import * as mongoose from 'mongoose';
+import * as MongoDBStore from 'connect-mongodb-session';
 
 config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const {
-    SESSION_SECRET,
-    FRONTEND_URL,
-    MONGODB_URI,
-    NODE_ENV,
-    PORT,
-  } = process.env;
+  const sessionSecret = process.env.SESSION_SECRET;
+  const frontendURL = process.env.FRONTEND_URL;
 
-  if (!SESSION_SECRET) {
-    throw new Error('SESSION_SECRET environment variable is not defined');
-  }
-
-  if (!FRONTEND_URL) {
+  if (!frontendURL) {
     throw new Error('FRONTEND_URL environment variable is not defined');
   }
 
-  if (!MONGODB_URI) {
-    throw new Error('MONGODB_URI environment variable is not defined');
+  if (!sessionSecret) {
+    throw new Error('SESSION_SECRET environment variable is not defined');
   }
 
-  const isProduction = NODE_ENV === 'production';
+  const isProduction = process.env.NODE_ENV === 'production';
 
-  // Initialize MongoStore with session
-  const MongoStore = connectMongo;
+  // Connect to MongoDB
+  const MONGODB_URI = process.env.MONGODB_URI; // Ensure you have this in your .env
+  if (!MONGODB_URI) {
+    throw new Error('MONGO_URI environment variable is not defined');
+  }
+  await mongoose.connect(MONGODB_URI);
 
+  // MongoDB session store
+  const store = new MongoDBStore(session)({
+    uri: MONGODB_URI,
+    collection: 'sessions', // You can change the collection name if you want
+  });
+
+  store.on('error', (error) => {
+    console.error('Session store error:', error);
+  });
+
+  // Use session with MongoDB store
   app.use(
     session({
-      secret: SESSION_SECRET,
+      secret: sessionSecret,
       saveUninitialized: false,
       resave: false,
+      store: store, // Use MongoDB session store
       cookie: {
-        secure: isProduction, // True if using HTTPS in production
-        maxAge: 1000 * 60 * 60 * 24, // 1 day
-        sameSite: 'none',
+        secure: isProduction, // Set to true in production if using https
+        maxAge: 1000 * 60 * 60 * 24, // Session max age: 1 day
       },
-      store: new MongoStore({
-        mongoUrl: MONGODB_URI,
-      }),
-    }),
+    })
   );
 
   app.enableCors({
-    origin: FRONTEND_URL,
+    origin: frontendURL,
     credentials: true,
   });
 
   app.use(passport.initialize());
   app.use(passport.session());
 
-  const port = PORT ? Number(PORT) : 3000;
-  await app.listen(port);
-  console.log(`Server running on http://localhost:${port}`);
+  await app.listen(process.env.PORT ?? 3000);
 }
-
 bootstrap();
