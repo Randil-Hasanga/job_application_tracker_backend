@@ -16,7 +16,8 @@ export class AuthController {
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   handleRedirect(@Req() req: Request, @Res() res: Response) {
-    return res.redirect(`${process.env.FRONTEND_URL}/dashboard`); // Now TypeScript recognizes redirect
+    return {ok : "OK"}
+    //return res.redirect(`${process.env.FRONTEND_URL}/dashboard`); // Now TypeScript recognizes redirect
   }
 
   @Post('register')
