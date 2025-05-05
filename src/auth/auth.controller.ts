@@ -40,6 +40,7 @@ export class AuthController {
     });
   }
 
+
   @Post('register')
   async register(
     @Body('email') email: string,
@@ -71,6 +72,8 @@ export class AuthController {
           console.error('Login error:', err);
           return res.status(500).send({ message: 'Login failed' });
         }
+
+        (req.session as any).userId = user._id;
 
         console.log('Session ID:', req.sessionID);
         console.log('Session User:', req.user);
