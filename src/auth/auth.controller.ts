@@ -15,22 +15,28 @@ export class AuthController {
 
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
-  handleRedirect(@Req() req: Request, @Res() res: Response) {
-    const user = req.user as any; // Access user from request
-
-    req.login(user, (err) => {
-      if (err) {
-        console.error('Login failed:', err);
-        return res.status(500).send({ message: 'Login failed' }); // Send error response
-      }
-
-      // Set the session cookie
-      res.cookie('connect.sid', req.sessionID, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'none' });
-
-      // Redirect to the frontend dashboard
-      return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
-    });
+  handleRedirect(@Req() req: Request, @Res() res: Response) {   
+    return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
   }
+
+  // @Get('google/redirect')
+  // @UseGuards(GoogleAuthGuard)
+  // handleRedirect(@Req() req: Request, @Res() res: Response) {
+  //   const user = req.user as any; // Access user from request
+
+  //   req.login(user, (err) => {
+  //     if (err) {
+  //       console.error('Login failed:', err);
+  //       return res.status(500).send({ message: 'Login failed' }); // Send error response
+  //     }
+
+  //     // Set the session cookie
+  //     res.cookie('connect.sid', req.sessionID, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'none' });
+
+  //     // Redirect to the frontend dashboard
+  //     return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
+  //   });
+  // }
 
   @Post('register')
   async register(
