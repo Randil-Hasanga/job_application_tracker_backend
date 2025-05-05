@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './utils/auth.guard';
 import { Request, Response } from 'express'; // Explicitly import Response from express
+import { ok } from 'assert';
 
 @Controller('auth')
 export class AuthController {
@@ -16,33 +17,7 @@ export class AuthController {
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   handleRedirect(@Req() req: Request, @Res() res: Response) {
-    const user = req.user as any;
-    if (!user) {
-      return res.redirect(`${process.env.FRONTEND_URL}/login?error=nouser`);
-    }
-
-    req.session.regenerate((err) => {
-      if (err) {
-        console.error('Session regeneration failed:', err);
-        return res.redirect(`${process.env.FRONTEND_URL}/login?error=session`);
-      }
-
-      req.logIn(user, (err) => {
-        if (err) {
-          console.error('Login failed:', err);
-          return res.redirect(`${process.env.FRONTEND_URL}/login?error=login`);
-        }
-
-        // store your extra data
-        (req.session as any).userId = user._id;
-
-        // Force a save — express-session will now emit its own Set-Cookie
-        req.session.save((err) => {
-          if (err) console.error('Session save failed:', err);
-          return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
-        });
-      });
-    });
+    return {msg: 'OK'}
   }
 
 

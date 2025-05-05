@@ -53,7 +53,6 @@ export class ApplicationController {
   // }
 
   @Get()
-  @UseGuards(AuthenticatedGuard)
   async findAll(@Req() req: Request) {
     try {
       console.log("getting applications");
