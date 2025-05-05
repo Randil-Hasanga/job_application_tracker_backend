@@ -2,7 +2,6 @@ import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './utils/auth.guard';
 import { Request, Response } from 'express'; // Explicitly import Response from express
-import { ok } from 'assert';
 
 @Controller('auth')
 export class AuthController {
@@ -17,11 +16,8 @@ export class AuthController {
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   handleRedirect(@Req() req: Request, @Res() res: Response) {
-    return {msg: 'OK'}
+    return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
   }
-
-
-
 
   @Post('register')
   async register(

@@ -57,7 +57,7 @@ export class ApplicationController {
     try {
       console.log("getting applications");
 
-      const userId = (req.session as any).userId;
+      const userId = (req.session as any).passport.user._id;
 
       if (!userId) {
         throw new Error('User ID not found in session');
