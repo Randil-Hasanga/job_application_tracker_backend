@@ -15,7 +15,7 @@ export class GoogleAuthGuard extends AuthGuard('google') {
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    console.log("Inside authenticatedGuard authguard : canActivate func >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    console.log("Inside authenticated authguard : canActivate func >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     const req = context.switchToHttp().getRequest();
     console.log('Is Authenticated:', req.isAuthenticated());
     return req.isAuthenticated(); // passport adds this method

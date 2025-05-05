@@ -18,7 +18,9 @@ export class AuthController {
   async handleRedirect(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<void> {
     // Set the cookie with the session ID
     res.cookie('connect.sid', req.sessionID, { httpOnly: true });
-
+    
+    console.log('Session ID:', req.sessionID);
+    console.log('User :', req.user);
     // Redirect to the frontend URL
     const frontendUrl = process.env.FRONTEND_URL; // Replace with your frontend URL
     if(!frontendUrl){

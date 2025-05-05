@@ -32,6 +32,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
         const picture = profile._json.picture || '';
 
         const  user = await this.authService.validateUser({ email, displayName, picture });
+        console.log(`USer obj in google strategy.validate = ${user}`)
         if(!user){
             throw new Error('User is NULL');
         }
