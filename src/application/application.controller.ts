@@ -57,6 +57,10 @@ export class ApplicationController {
     try {
       console.log("getting applications");
 
+      if (!req.isAuthenticated()) {
+        throw new Error('User not authenticated');
+      }      
+
       const userId = (req.session as any).passport.user._id;
 
       if (!userId) {
