@@ -24,7 +24,7 @@ export class AuthController {
     if(!frontendUrl){
       throw new Error('frontend url not found')
     }
-    res.redirect(frontendUrl);
+    res.redirect(`${frontendUrl}/dashboard`);
   }
 
   @Post('register')
