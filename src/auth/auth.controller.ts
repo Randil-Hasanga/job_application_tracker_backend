@@ -18,36 +18,42 @@ export class AuthController {
   handleRedirect(@Req() req: Request, @Res() res: Response) {
     console.log('Inside redirect google');
     const user = req.user as any;
-
+  
     if (!user) {
       return res.redirect(`${process.env.FRONTEND_URL}/login?error=nouser`);
     }
-
+  
+    // 1) Regenerate the session
     req.session.regenerate((err) => {
       if (err) {
         console.error('Session regeneration failed:', err);
         return res.redirect(`${process.env.FRONTEND_URL}/login?error=session`);
       }
-
+  
+      // 2) Log the user in to the new session
       req.logIn(user, (err) => {
         if (err) {
           console.error('Login failed:', err);
           return res.redirect(`${process.env.FRONTEND_URL}/login?error=login`);
         }
-
+  
+        // 3) Store anything you want on the session
         (req.session as any).userId = user._id;
-        // Send updated cookie to browser
-        res.cookie('connect.sid', req.sessionID, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-          maxAge: 1000 * 60 * 60 * 24, // 1 day
+  
+        // 4) Save the session *and* let express-session emit the proper Set-Cookie
+        req.session.save((err) => {
+          if (err) {
+            console.error('Session save failed:', err);
+            // even if save fails, we can still redirect
+          }
+  
+          // 5) Now redirect to your frontend
+          return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
         });
-
-        return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
       });
     });
   }
+  
 
 
 
