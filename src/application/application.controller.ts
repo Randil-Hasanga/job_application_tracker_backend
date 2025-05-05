@@ -12,9 +12,10 @@ export class ApplicationController {
   @UseGuards(AuthenticatedGuard)
   async create(@Body() createApplicationDto: CreateApplicationDto, @Req() req: Request) {
     try {
-      const user = req.user as any; // Cast to any to access user properties
-      const userId = user._id;
+      const user = (req.session as any).passport?.user;// This is where Passport stores the user data
+      const userId = user?._id;
 
+      
       const application = await this.applicationService.create({
         ...createApplicationDto,
         user_id: userId,
@@ -27,21 +28,21 @@ export class ApplicationController {
   }
 
   @Get()
+  @UseGuards(AuthenticatedGuard)
   async findAll(@Req() req: Request) {
     try {
-      console.log("getting applications")
       // Correctly access the user ID from the session object
-      const user = req.user as any; // Cast to any to access user properties
-      const userId = user._id;
-
+      const user = (req.session as any).passport?.user;// This is where Passport stores the user data
+      const userId = user?._id;
+  
       if (!userId) {
         throw new Error('User ID not found in session');
       }
-
+  
       console.log('Session:', req.session);
       console.log('User:', user);  // Logs the user object from session
       console.log('User id :', userId);
-
+  
       // Fetch applications for the user based on the userId
       const applications = await this.applicationService.findAll(userId);
       return applications;
@@ -50,6 +51,7 @@ export class ApplicationController {
       throw new Error('Failed to fetch applications. Please try again later.');
     }
   }
+  
 
   @Get(':id')
   findApplicationById(@Param('id') id: string) {
