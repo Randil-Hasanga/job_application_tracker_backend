@@ -36,6 +36,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
         if(!user){
             throw new Error('User is NULL');
         }
-        return user; // Return the user object or null if not found
+        return user; 
     }
 }

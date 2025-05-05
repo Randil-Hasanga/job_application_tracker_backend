@@ -49,11 +49,11 @@ export class SessionSerializer extends PassportSerializer {
     console.log("Serialized: Done serializing >>>>>>>>>>>>>>>>>>>>>>>>>>");
   }
 
-  async deserializeUser (payload: any, done: (err: any, user: any) => void) {
+  deserializeUser (payload: any, done: (err: any, user: any) => void) {
     try {
       console.log("Inside Deserializer: Deserializing USER >>>>>>>>>>>>>>>>>>>>>>>>>>");
       console.log('Deserializing user', payload);
-      const user = await this.authService.findUser (payload._id);
+      const user = this.authService.findUser (payload._id);
       if (!user) {
         console.error('User  not found during deserialization');
         return done(null, null); // No user found, log out
