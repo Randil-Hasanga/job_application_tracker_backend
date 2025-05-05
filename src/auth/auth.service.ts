@@ -15,6 +15,7 @@ export class AuthService {
 
     async validateUser(userDetails: UserDetails) {
         try {
+            console.log("Inside authService : validateuser func >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
             const user = await this.userModel.findOne({ email: userDetails.email });
             console.log("User found", user);
             if (user) return user;
@@ -34,6 +35,7 @@ export class AuthService {
 
     async findUser(id: string) {
         try {
+            console.log("Inside authService : findUser func >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
             const user = await this.userModel.findById(new Types.ObjectId(id)).exec();
             if (!user) {
                 console.error(`User with ID ${id} not found`);
