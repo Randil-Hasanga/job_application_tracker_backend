@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './utils/auth.guard';
 import { Request, Response } from 'express'; // Explicitly import Response from express
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
@@ -16,8 +16,20 @@ export class AuthController {
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   handleRedirect(@Req() req: Request, @Res() res: Response) {
-    return {ok : "OK"}
-    //return res.redirect(`${process.env.FRONTEND_URL}/dashboard`); // Now TypeScript recognizes redirect
+    const user = req.user as any; // Access user from request
+
+    req.login(user, (err) => {
+      if (err) {
+        console.error('Login failed:', err);
+        return res.status(500).send({ message: 'Login failed' }); // Send error response
+      }
+
+      // Set the session cookie
+      res.cookie('connect.sid', req.sessionID, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'none' });
+
+      // Redirect to the frontend dashboard
+      return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
+    });
   }
 
   @Post('register')
@@ -37,6 +49,8 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
+    if (password == "") throw new UnauthorizedException("Provide Password");
+
     const user = await this.authService.validateUserByEmail(email, password);
     req.login(user, (err) => {
       if (err) {
