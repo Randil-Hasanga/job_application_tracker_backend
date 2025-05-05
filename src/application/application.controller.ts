@@ -26,48 +26,21 @@ export class ApplicationController {
     }
   }
 
-  // @Get()
-  // @UseGuards(AuthenticatedGuard)
-  // async findAll(@Req() req: Request) {
-  //   try {
-  //     console.log("getting applications")
-  //     // Correctly access the user ID from the session object
-  //     const user = req.user as any; // Cast to any to access user properties
-  //     const userId = user._id;
-
-  //     if (!userId) {
-  //       throw new Error('User ID not found in session');
-  //     }
-
-  //     console.log('Session:', req.session);
-  //     console.log('User:', user);  // Logs the user object from session
-  //     console.log('User id :', userId);
-
-  //     // Fetch applications for the user based on the userId
-  //     const applications = await this.applicationService.findAll(userId);
-  //     return applications;
-  //   } catch (error) {
-  //     console.error('Error fetching applications:', error);
-  //     throw new Error('Failed to fetch applications. Please try again later.');
-  //   }
-  // }
-
   @Get()
   async findAll(@Req() req: Request) {
     try {
-      console.log("getting applications");
-
-      console.log('Session:', req.session);
-      console.log('User :', req.user);
-
-      const userId = (req.session as any).passport.user._id;
+      console.log("getting applications")
+      // Correctly access the user ID from the session object
+      const user = req.user as any; // Cast to any to access user properties
+      const userId = user._id;
 
       if (!userId) {
         throw new Error('User ID not found in session');
       }
 
       console.log('Session:', req.session);
-      console.log('User ID:', userId);
+      console.log('User:', user);  // Logs the user object from session
+      console.log('User id :', userId);
 
       // Fetch applications for the user based on the userId
       const applications = await this.applicationService.findAll(userId);
@@ -77,9 +50,6 @@ export class ApplicationController {
       throw new Error('Failed to fetch applications. Please try again later.');
     }
   }
-
-
-
 
   @Get(':id')
   findApplicationById(@Param('id') id: string) {
