@@ -105,17 +105,19 @@ export class AuthController {
   async handleRedirect(@Req() req: Request, @Res() res: Response): Promise<any> {
     // IMPORTANT: Explicitly login the user into the session
     return new Promise((resolve, reject) => {
-      const user = req.user as UserInterface;
+      const user = req.user as UserInterface; // Use your User type here
+
       req.login(user, (err) => {
         if (err) {
           console.error('Login failed during OAuth redirect:', err);
           return reject(err);
         }
-        console.log('Session ID after OAuth login:', req.sessionID);
-        console.log('User after OAuth login:', req.user);
 
-        // Set the session cookie explicitly if needed (may be redundant)
-        res.cookie('connect.sid', req.sessionID, { httpOnly: true });
+        console.log('Session ID after OAuth login:', req.sessionID);
+        console.log('User  after OAuth login:', req.user);
+
+        // Set the session cookie explicitly if needed
+        res.cookie('connect.sid', req.sessionID, { httpOnly: true, secure: true, sameSite: 'none' });
 
         const frontendUrl = process.env.FRONTEND_URL;
         if (!frontendUrl) {
@@ -124,6 +126,7 @@ export class AuthController {
         res.redirect(`${frontendUrl}/dashboard`);
         resolve(null);
       });
+      console.log('Session after login:', req.session);
     });
   }
 
