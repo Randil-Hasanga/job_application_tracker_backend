@@ -16,7 +16,7 @@ export class AuthController {
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   handleRedirect(@Req() req: Request, @Res() res: Response) {
-    console.log('Inside redirect google')
+    console.log('Inside redirect google');
     const user = req.user as any;
 
     if (!user) {
@@ -35,11 +35,20 @@ export class AuthController {
           return res.redirect(`${process.env.FRONTEND_URL}/login?error=login`);
         }
 
-        (req.session as any).userId = user._id; // or just req.session['userId']
+        (req.session as any).userId = user._id;
+        // Send updated cookie to browser
+        res.cookie('connect.sid', req.sessionID, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+          maxAge: 1000 * 60 * 60 * 24, // 1 day
+        });
+
         return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
       });
     });
   }
+
 
 
   @Post('register')
