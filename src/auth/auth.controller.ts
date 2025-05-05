@@ -5,7 +5,7 @@ import { Request, Response } from 'express'; // Explicitly import Response from 
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
@@ -16,7 +16,28 @@ export class AuthController {
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   handleRedirect(@Req() req: Request, @Res() res: Response) {
-    return res.redirect(`${process.env.FRONTEND_URL}/dashboard`); // Now TypeScript recognizes redirect
+    const user = req.user as any;
+
+    if (!user) {
+      return res.redirect(`${process.env.FRONTEND_URL}/login?error=nouser`);
+    }
+
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error('Session regeneration failed:', err);
+        return res.redirect(`${process.env.FRONTEND_URL}/login?error=session`);
+      }
+
+      req.logIn(user, (err) => {
+        if (err) {
+          console.error('Login failed:', err);
+          return res.redirect(`${process.env.FRONTEND_URL}/login?error=login`);
+        }
+
+        (req.session as any).userId = user._id; // or just req.session['userId']
+        return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
+      });
+    });
   }
 
   @Post('register')
@@ -37,20 +58,20 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const user = await this.authService.validateUserByEmail(email, password);
-  
+
     // Destroy old session and regenerate new one
     req.session.regenerate((err) => {
       if (err) {
         console.error('Session regeneration failed:', err);
         return res.status(500).send({ message: 'Login failed' });
       }
-  
+
       req.login(user, (err) => {
         if (err) {
           console.error('Login error:', err);
           return res.status(500).send({ message: 'Login failed' });
         }
-        
+
         console.log('Session ID:', req.sessionID);
         console.log('Session User:', req.user);
 
@@ -59,7 +80,7 @@ export class AuthController {
       });
     });
   }
-  
+
 
   @Get('user')
   async getUser(@Req() req: Request) {

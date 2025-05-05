@@ -12,9 +12,8 @@ export class ApplicationController {
   @UseGuards(AuthenticatedGuard)
   async create(@Body() createApplicationDto: CreateApplicationDto, @Req() req: Request) {
     try {
-      const user = (req.session as any).passport?.user;// This is where Passport stores the user data
-      const userId = user?._id;
-
+      const user = req.user as any; // Cast to any to access user properties
+      const userId = user._id;
       
       const application = await this.applicationService.create({
         ...createApplicationDto,
@@ -33,8 +32,8 @@ export class ApplicationController {
     try {
       console.log("getting applications")
       // Correctly access the user ID from the session object
-      const user = (req.session as any).passport?.user;// This is where Passport stores the user data
-      const userId = user?._id;
+      const user = req.user as any; // Cast to any to access user properties
+      const userId = user._id;
   
       if (!userId) {
         throw new Error('User ID not found in session');
