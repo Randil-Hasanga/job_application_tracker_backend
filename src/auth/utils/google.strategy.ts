@@ -32,7 +32,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
 
         const  user = await this.authService.validateUser({ email, displayName, picture });
         if(!user){
-            console.log("User is NULL")
+            throw new Error('User is NULL');
         }
         return user; // Return the user object or null if not found
     }
