@@ -37,14 +37,29 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const user = await this.authService.validateUserByEmail(email, password);
-    req.login(user, (err) => {
+  
+    // Destroy old session and regenerate new one
+    req.session.regenerate((err) => {
       if (err) {
-        throw new Error('Login failed');
+        console.error('Session regeneration failed:', err);
+        return res.status(500).send({ message: 'Login failed' });
       }
-      res.cookie('connect.sid', req.sessionID, { httpOnly: true });
-      res.send({ message: 'Login successful', user });
+  
+      req.login(user, (err) => {
+        if (err) {
+          console.error('Login error:', err);
+          return res.status(500).send({ message: 'Login failed' });
+        }
+        
+        console.log('Session ID:', req.sessionID);
+        console.log('Session User:', req.user);
+
+        res.cookie('connect.sid', req.sessionID, { httpOnly: true });
+        res.send({ message: 'Login successful', user });
+      });
     });
   }
+  
 
   @Get('user')
   async getUser(@Req() req: Request) {
