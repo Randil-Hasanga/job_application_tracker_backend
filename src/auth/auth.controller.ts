@@ -15,8 +15,16 @@ export class AuthController {
 
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
-  handleRedirect(@Req() req: Request, @Res() res: Response) {
-    return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
+  async handleRedirect(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<void> {
+    // Set the cookie with the session ID
+    res.cookie('connect.sid', req.sessionID, { httpOnly: true });
+
+    // Redirect to the frontend URL
+    const frontendUrl = process.env.FRONTEND_URL; // Replace with your frontend URL
+    if(!frontendUrl){
+      throw new Error('frontend url not found')
+    }
+    res.redirect(frontendUrl);
   }
 
   @Post('register')
@@ -50,8 +58,6 @@ export class AuthController {
           console.error('Login error:', err);
           return res.status(500).send({ message: 'Login failed' });
         }
-
-        (req.session as any).userId = user._id;
 
         console.log('Session ID:', req.sessionID);
         console.log('Session User:', req.user);
