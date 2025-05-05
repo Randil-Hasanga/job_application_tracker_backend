@@ -28,7 +28,6 @@ export class ApplicationController {
   }
 
   @Get()
-  @UseGuards(AuthenticatedGuard)
   async findAll(@Req() req: Request) {
     try {
       // Correctly access the user ID from the session object
