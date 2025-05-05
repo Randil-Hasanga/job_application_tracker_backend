@@ -16,6 +16,7 @@ export class AuthController {
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   handleRedirect(@Req() req: Request, @Res() res: Response) {
+    console.log('Inside redirect google')
     const user = req.user as any;
 
     if (!user) {
