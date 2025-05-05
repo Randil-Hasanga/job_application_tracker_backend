@@ -11,7 +11,7 @@ import { config } from 'dotenv';
 config();
 
 if (!process.env.MONGODB_URI) {
-  throw new Error('MONGODB_URI environment variable is not set');
+  throw new Error('MONGODB URI environment variable is not set');
 }
 
 @Module({

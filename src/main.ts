@@ -1,52 +1,3 @@
-// import { NestFactory } from '@nestjs/core';
-// import { AppModule } from './app.module';
-// import * as session from 'express-session';
-// import * as passport from 'passport';
-// import { config } from 'dotenv';
-
-// config();
-
-// async function bootstrap() {
-//   const app = await NestFactory.create(AppModule);
-
-//   const sessionSecret = process.env.SESSION_SECRET;
-//   const frontendURL = process.env.FRONTEND_URL;
-
-//   if (!frontendURL) {
-//     throw new Error('FRONTEND_URL environment variable is not defined');
-//   }
-
-//   if (!sessionSecret) {
-//     throw new Error('SESSION_SECRET environment variable is not defined');
-//   }
-
-//   const isProduction = process.env.NODE_ENV === 'production';
-
-//   app.use(session({
-//     secret: sessionSecret,
-//     saveUninitialized: false,
-//     resave: false,
-//     cookie: {
-//       secure: false, // Set to true if using https
-//       maxAge: 1000 * 60 *60 *24,
-//       // sameSite: 'none',
-//     },
-//   }));
-
-//   app.enableCors({
-//     origin: frontendURL,
-//     credentials: true,
-//   });
-  
-
-//   app.use(passport.initialize());
-//   app.use(passport.session());
-
-//   await app.listen(process.env.PORT ?? 3000);
-// }
-// bootstrap();
-
-
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
@@ -77,6 +28,7 @@ async function bootstrap() {
   }
 
   const isProduction = process.env.NODE_ENV === 'production';
+  console.log(`isProduction ============================= ${isProduction}`);
 
   // Connect to MongoDB
   const MONGODB_URI = process.env.MONGODB_URI; // Ensure you have this in your .env
