@@ -31,6 +31,7 @@ export class ApplicationController {
   @UseGuards(AuthenticatedGuard)
   async findAll(@Req() req: Request) {
     try {
+      console.log("getting applications")
       // Correctly access the user ID from the session object
       const user = (req.session as any).passport?.user;// This is where Passport stores the user data
       const userId = user?._id;
