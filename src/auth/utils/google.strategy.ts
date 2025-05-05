@@ -20,7 +20,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     async validate(accessToken: string, refreshToken: string, profile: Profile) {
         console.log("Google Profile", profile);
         console.log("Access Token", accessToken);
-        console.log("Refresh Token", refreshToken);
 
         // Check if emails exist in the profile
         if (!profile.emails || profile.emails.length === 0) {
@@ -32,6 +31,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
         const picture = profile._json.picture || '';
 
         const  user = await this.authService.validateUser({ email, displayName, picture });
-        return user || null; // Return the user object or null if not found
+        if(!user){
+            console.log("User is NULL")
+        }
+        return user; // Return the user object or null if not found
     }
 }
