@@ -55,4 +55,9 @@ export class AuthController {
       return { message: 'User not authenticated' };
     }
   }
+
+  @Get('check')
+  isAuthenticated(@Req() req: Request) {
+    return { authenticated: req.isAuthenticated?.() ?? false };
+  }
 }
