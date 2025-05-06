@@ -72,7 +72,7 @@ export class AuthController {
           throw new Error('Session destruction failed');
         }
         res.clearCookie('connect.sid');
-        res.send({ message: 'Logout successful' });
+        res.send({ sucess: true });
       });
     });
   }
