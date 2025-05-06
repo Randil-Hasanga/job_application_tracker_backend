@@ -30,7 +30,7 @@ export class AuthenticatedGuard implements CanActivate {
     if (req.isAuthenticated()) {
       return true;
     } else {
-      res.redirect('/auth/login'); // Change this path as needed
+      res.redirect(`${process.env.FRONTEND_URL}/login`);
       return false;
     }
   }
