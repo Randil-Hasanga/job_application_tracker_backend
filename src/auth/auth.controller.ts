@@ -15,7 +15,7 @@ export class AuthController {
 
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
-  handleRedirect(@Req() req: Request, @Res() res: Response) {   
+  handleRedirect(@Req() req: Request, @Res() res: Response) {
     return res.redirect(`${process.env.FRONTEND_URL}/`);
   }
 
@@ -59,5 +59,21 @@ export class AuthController {
   @Get('check')
   isAuthenticated(@Req() req: Request) {
     return { authenticated: req.isAuthenticated?.() ?? false };
+  }
+
+  @Get('logout')
+  logout(@Req() req: Request, @Res() res: Response) {
+    req.logout((err) => {
+      if (err) {
+        throw new Error('Logout failed');
+      }
+      req.session.destroy((err) => {
+        if (err) {
+          throw new Error('Session destruction failed');
+        }
+        res.clearCookie('connect.sid');
+        res.send({ message: 'Logout successful' });
+      });
+    });
   }
 }
