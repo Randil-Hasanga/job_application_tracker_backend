@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { ApplicationService } from './application.service';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { AuthenticatedGuard } from 'src/auth/utils/auth.guard';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 
 @Controller('application')
 export class ApplicationController {
@@ -26,11 +26,8 @@ export class ApplicationController {
 
   @Get()
   @UseGuards(AuthenticatedGuard)
-  async findAll(@Req() req: Request, @Res() res : Response) {
+  async findAll(@Req() req: Request) {
     try {
-      if(!(req.isAuthenticated)){
-        return res.redirect(`${process.env.FRONTEND_URL}/login`);
-      }
       const user = (req.session as any).passport?.user;
       const userId = user?._id;
 
