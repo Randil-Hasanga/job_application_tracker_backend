@@ -7,13 +7,4 @@ export type UserDetails = {
 }
 
 
-export interface UserInterface {
-    _id: string; // or ObjectId if you're using MongoDB
-    email: string;
-    displayName: string;
-    picture?: string; // optional
-    // Add any other properties you have in your user model
-}
-
-
 

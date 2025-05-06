@@ -43,26 +43,19 @@ export class SessionSerializer extends PassportSerializer {
     super();
   }
 
-  async serializeUser (user: UserDocument, done: Function) {
-    console.log("Inside Serializer: Serializing USER >>>>>>>>>>>>>>>>>>>>>>>>>>");
+  async serializeUser(user: UserDocument, done: Function) {
     await done(null, { _id: user._id, email: user.email, picture: user.picture, displayName: user.displayName });
-    console.log("Serialized: Done serializing >>>>>>>>>>>>>>>>>>>>>>>>>>");
   }
 
-  deserializeUser (payload: any, done: (err: any, user: any) => void) {
+  deserializeUser(payload: any, done: (err: any, user: any) => void) {
     try {
-      console.log("Inside Deserializer: Deserializing USER >>>>>>>>>>>>>>>>>>>>>>>>>>");
-      console.log('Deserializing user', payload);
-      const user = this.authService.findUser (payload._id);
+      const user = this.authService.findUser(payload._id);
       if (!user) {
-        console.error('User  not found during deserialization');
-        return done(null, null); // No user found, log out
+        return done(null, null);
       }
-      console.log('User  found during deserialization', user);
       return done(null, user);
     } catch (err) {
-      console.error('Error during deserialization', err);
-      return done(err, null); // In case of unexpected errors
+      return done(err, null);
     }
   }
 }

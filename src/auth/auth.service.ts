@@ -15,27 +15,20 @@ export class AuthService {
 
     async validateUser(userDetails: UserDetails) {
         try {
-            console.log("Inside authService : validateuser func >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
             const user = await this.userModel.findOne({ email: userDetails.email });
-            console.log("User found", user);
             if (user) return user;
-    
-            console.log("User not found, creating new user");
+
             const newUser = new this.userModel(userDetails);
             await newUser.save();
-            console.log('Auth service', newUser);
             return newUser;
-    
         } catch (error) {
             console.error("Error validating user", error);
             throw new Error('Error validating user');
         }
     }
-    
 
     async findUser(id: string) {
         try {
-            console.log("Inside authService : findUser func >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
             const user = await this.userModel.findById(new Types.ObjectId(id)).exec();
             if (!user) {
                 console.error(`User with ID ${id} not found`);

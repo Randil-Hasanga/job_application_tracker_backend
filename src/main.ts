@@ -12,26 +12,22 @@ config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   (app as INestApplication & { set: Function }).set('trust proxy', 1);
-  
+
   const sessionSecret = process.env.SESSION_SECRET;
   const frontendURL = process.env.FRONTEND_URL;
 
   if (!frontendURL) {
-    
     throw new Error('FRONTEND_URL environment variable is not defined');
-  }else{
-    console.log(`frontend url ${frontendURL}`)
   }
-  
+
   if (!sessionSecret) {
     throw new Error('SESSION_SECRET environment variable is not defined');
   }
 
   const isProduction = process.env.NODE_ENV === 'production';
-  console.log(`isProduction ============================= ${isProduction}`);
 
   // Connect to MongoDB
-  const MONGODB_URI = process.env.MONGODB_URI; // Ensure you have this in your .env
+  const MONGODB_URI = process.env.MONGODB_URI;
   if (!MONGODB_URI) {
     throw new Error('MONGO_URI environment variable is not defined');
   }
@@ -40,25 +36,23 @@ async function bootstrap() {
   // MongoDB session store
   const store = new MongoDBStore(session)({
     uri: MONGODB_URI,
-    collection: 'sessions', // You can change the collection name if you want
+    collection: 'sessions',
   });
 
   store.on('error', (error) => {
     console.error('Session store error:', error);
   });
 
-  
-  // Use session with MongoDB store
   app.use(
     session({
       secret: sessionSecret,
       saveUninitialized: false,
       resave: false,
-      store: store, // Use MongoDB session store
+      store: store,
       cookie: {
-        secure: isProduction, // Set to true in production if using https
-        maxAge: 1000 * 60 * 60 * 24, // Session max age: 1 day
-        sameSite : isProduction ? 'none' : 'lax'
+        secure: isProduction,
+        maxAge: 1000 * 60 * 60 * 24,
+        sameSite: isProduction ? 'none' : 'lax'
       },
     })
   );

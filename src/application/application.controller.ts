@@ -12,37 +12,28 @@ export class ApplicationController {
   @UseGuards(AuthenticatedGuard)
   async create(@Body() createApplicationDto: CreateApplicationDto, @Req() req: Request) {
     try {
-      const user = (req.session as any).passport?.user;// This is where Passport stores the user data
+      const user = (req.session as any).passport?.user;
       const userId = user?._id;
-
-      
       const application = await this.applicationService.create({
         ...createApplicationDto,
         user_id: userId,
       });
       return application;
     } catch (error) {
-      console.error('Error creating application:', error);
       throw new Error('Failed to create application. Please try again later.');
     }
   }
 
   @Get()
+  @UseGuards(AuthenticatedGuard)
   async findAll(@Req() req: Request) {
     try {
-      // Correctly access the user ID from the session object
-      const user = (req.session as any).passport?.user;// This is where Passport stores the user data
+      const user = (req.session as any).passport?.user;
       const userId = user?._id;
-  
+
       if (!userId) {
         throw new Error('User ID not found in session');
       }
-  
-      console.log('Session:', req.session);
-      console.log('User:', user);  // Logs the user object from session
-      console.log('User id :', userId);
-  
-      // Fetch applications for the user based on the userId
       const applications = await this.applicationService.findAll(userId);
       return applications;
     } catch (error) {
@@ -50,20 +41,21 @@ export class ApplicationController {
       throw new Error('Failed to fetch applications. Please try again later.');
     }
   }
-  
+
 
   @Get(':id')
+  @UseGuards(AuthenticatedGuard)
   findApplicationById(@Param('id') id: string) {
     try {
       const application = this.applicationService.findOne(id);
       return application;
     } catch (error) {
-      console.error('Error fetching application by ID:', error);
       throw new Error('Failed to fetch application. Please try again later.');
     }
   }
 
   @Delete(':id')
+  @UseGuards(AuthenticatedGuard)
   remove(@Param('id') id: string) {
     try {
       const response = this.applicationService.remove(id);
@@ -78,6 +70,7 @@ export class ApplicationController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthenticatedGuard)
   async update(@Param('id') id: string, @Body() updateApplicationDto: CreateApplicationDto) {
     try {
       const response = await this.applicationService.update(id, updateApplicationDto);
