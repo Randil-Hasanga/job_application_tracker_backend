@@ -1,6 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Response } from 'express';
 
 @Injectable()
 export class GoogleAuthGuard extends AuthGuard('google') {
@@ -12,26 +11,10 @@ export class GoogleAuthGuard extends AuthGuard('google') {
   }
 }
 
-// @Injectable()
-// export class AuthenticatedGuard implements CanActivate {
-//   canActivate(context: ExecutionContext): boolean {
-//     const req = context.switchToHttp().getRequest();
-//     return req.isAuthenticated();
-//   }
-// }
-
-
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest();
-    const res = context.switchToHttp().getResponse<Response>();
-
-    if (req.isAuthenticated()) {
-      return true;
-    } else {
-      res.redirect(`${process.env.FRONTEND_URL}/login`);
-      return false;
-    }
+    return req.isAuthenticated();
   }
 }
