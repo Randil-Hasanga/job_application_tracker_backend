@@ -25,8 +25,12 @@ export class AuthController {
     @Body('password') password: string,
     @Body('displayName') displayName: string,
   ) {
-    const user = await this.authService.registerUser(email, password, displayName);
-    return { message: 'User registered successfully', user };
+    try {
+      const user = await this.authService.registerUser(email, password, displayName);
+      return { message: 'User registered successfully', user };
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
+    }
   }
 
   @Post('login')

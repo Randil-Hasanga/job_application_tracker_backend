@@ -61,6 +61,12 @@ export class AuthService {
 
     async registerUser(email: string, password: string, displayName: string) {
         try {
+            // Check if user already exists
+            const existingUser = await this.userModel.findOne({ email });
+            if (existingUser) {
+                throw new Error('A user with this email already exists. Please use a different email or try logging in with Google.');
+            }
+
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = await this.userModel.create({
                 email,
@@ -70,7 +76,7 @@ export class AuthService {
             return newUser;
         } catch (error) {
             console.error('Error registering user:', error);
-            throw new Error('Failed to register user. Please try again later.');
+            throw error; // Throw the original error to preserve the custom message
         }
     }
 }
