@@ -16,7 +16,14 @@ export class AuthService {
     async validateUser(userDetails: UserDetails) {
         try {
             const user = await this.userModel.findOne({ email: userDetails.email });
-            if (user) return user;
+            if (user) {
+                // If user exists and has no picture but Google login provides one, update it
+                if (!user.picture && userDetails.picture) {
+                    user.picture = userDetails.picture;
+                    await user.save();
+                }
+                return user;
+            }
 
             const newUser = new this.userModel(userDetails);
             await newUser.save();
