@@ -4,7 +4,7 @@ import session from 'express-session';
 import * as passport from 'passport';
 import { config } from 'dotenv';
 import * as mongoose from 'mongoose';
-import * as MongoDBStore from 'connect-mongodb-session';
+import MongoDBStore from 'connect-mongodb-session';
 import { INestApplication } from '@nestjs/common';
 
 config();
@@ -34,7 +34,8 @@ async function bootstrap() {
   await mongoose.connect(MONGODB_URI);
 
   // MongoDB session store
-  const store = new MongoDBStore(session)({
+  const MongoDBStoreClass = MongoDBStore(session);
+  const store = new MongoDBStoreClass({
     uri: MONGODB_URI,
     collection: 'sessions',
   });
