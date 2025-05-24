@@ -31,6 +31,7 @@ async function bootstrap() {
   if (!MONGODB_URI) {
     throw new Error('MONGO_URI environment variable is not defined');
   }
+  console.log('Connecting to MongoDB:', MONGODB_URI);
   await mongoose.connect(MONGODB_URI);
 
   // MongoDB session store
