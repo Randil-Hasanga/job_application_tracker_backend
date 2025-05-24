@@ -1,5 +1,4 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
-import fetch from 'node-fetch';
 
 @Injectable()
 export class TextGeneratorService {
@@ -23,6 +22,9 @@ export class TextGeneratorService {
     context: string,
   ): Promise<string> {
     try {
+      // Dynamically import node-fetch for ESM compatibility
+      const fetch = (await import('node-fetch')).default;
+
       const payload = {
         model: 'mistralai/mistral-7b-instruct:free',
         temperature: 0,
